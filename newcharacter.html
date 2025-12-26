@@ -1,0 +1,109 @@
+<!doctype html>
+<!--<html data-theme="dark">-->
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fighting Fantasy Companion App</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+</head>
+
+<body>
+  <a href="index.html">
+    <section class="hero is-small is-warning">
+      <div class="hero-body">
+        <p class="title">Fighting Fantasy</p>
+        <p class="subtitle">Companion App</p>
+      </div>
+    </section>
+  </a>
+
+  <section class="section">
+    <div class="container is-max-tablet">
+      <h1 class="title">New character</h1>
+
+      <article class="message is-info">
+        <div class="message-header">
+          <p>Set your <i>SKILL</i></p>
+        </div>
+        <div class="message-body">
+          It reflects your swordsmanship and fighting expertise;
+          the higher the better.
+        </div>
+      </article>
+
+      <button id="skill" class="button is-large is-fullwidth">🎲 Roll 1d6</button>
+
+      <article class="message is-danger mt-4">
+        <div class="message-header">
+          <p>Set your <i>STAMINA</i></p>
+        </div>
+        <div class="message-body">
+          It represents your strength; the higher your stamina, the longer you will survive.
+        </div>
+      </article>
+
+      <button id="stamina" class="button is-large is-fullwidth">🎲 🎲 Roll 2d6</button>
+
+      <article class="message is-warning mt-4">
+        <div class="message-header">
+          <p>Set your <i>LUCK</i></p>
+        </div>
+        <div class="message-body">
+          It represents how lucky a person you are. Luck - and magic - are facts of life in the Fantasy
+          world you are about to explore.
+        </div>
+      </article>
+
+      <button id="luck" class="button is-large is-fullwidth mb-4">🎲 Roll 1d6</button>
+
+      <button id="start" class="button is-large is-fullwidth mt-4">⚔️ Start</button>
+    </div>
+  </section>
+
+  <footer class="footer mt-5">
+    <div class="content has-text-centered">
+      <p>
+        <a href="https://cv.hal.science/oliviernocent" target="_blank">Olivier Nocent</a> &copy; 2025
+        <a href="https://github.com/oliviernocent/fighting-fantasy/" target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="common.js"></script>
+  <script>
+    skill.addEventListener("click", (event) => {
+      diceNumber = rollDice(1);
+      event.target.outerHTML = `<p class="has-text-centered is-size-1">${diceFace[diceNumber[0]]}</span>`;
+
+      currentBook.initialSkill = diceNumber[0] + 6;
+      currentBook.currentSkill = currentBook.initialSkill;
+    });
+
+    stamina.addEventListener("click", (event) => {
+      diceNumber = rollDice(2);
+      event.target.outerHTML = `<p class="has-text-centered is-size-1">${diceFace[diceNumber[0]]}&nbsp;${diceFace[diceNumber[1]]}</span>`;
+
+      currentBook.initialStamina = diceNumber[0] + diceNumber[1] + 12;
+      currentBook.currentStamina = currentBook.initialStamina;
+    });
+
+    luck.addEventListener("click", (event) => {
+      diceNumber = rollDice(1);
+      event.target.outerHTML = `<p class="has-text-centered is-size-1">${diceFace[diceNumber[0]]}</span>`;
+
+      currentBook.initialLuck = diceNumber[0] + 6;
+      currentBook.currentLuck = currentBook.initialLuck;
+    });
+
+    start.addEventListener("click", (event) => {
+      saveToLocalStorage();
+      window.location = "ingame.html";
+    });
+  </script>
+</body>
+
+</html>

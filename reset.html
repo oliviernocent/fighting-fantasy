@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Fighting Fantasy Companion App - reset</title>
+</head>
+
+<body>
+
+  <script>
+    fetch("ffappdata.json").then(response => response.text()).then(content => localStorage.setItem("ffappdata", content));
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,247 @@
+<!doctype html>
+<!--<html data-theme="dark">-->
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fighting Fantasy Companion App</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+</head>
+
+<body>
+  <a href="index.html">
+    <section class="hero is-small is-warning">
+      <div class="hero-body">
+        <p class="title">Fighting Fantasy</p>
+        <p class="subtitle">Companion App</p>
+      </div>
+    </section>
+  </a>
+
+  <section class="section">
+    <div class="container is-max-tablet">
+      <h1 class="title">Creature</h1>
+      <div class="is-flex is-flex-direction-row is-justify-content-space-between">
+        <div class="field mx-2">
+          <label class="label">Name</label>
+          <input id="name" class="input" type="text">
+        </div>
+        <div class="field mx-2">
+          <label class="label">Skill 🗡️</label>
+          <input id="skill" class="input" type="tel">
+        </div>
+        <div class="field mx-2">
+          <label class="label">Stamina ♥️</label>
+          <input id="stamina" class="input" type="tel">
+        </div>
+      </div>
+
+      <button id="creature-roll" class="button is-large is-fullwidth">🎲 🎲 Roll 2d6</button>
+      <p id="creature-roll-result" class="has-text-centered is-size-1 is-hidden"></p>
+
+      <h1 class="title mt-4">Hero</h1>
+
+      <button id="hero-roll" class="button is-large is-fullwidth">🎲 🎲 Roll 2d6</button>
+      <p id="hero-roll-result" class="has-text-centered is-size-1 is-hidden"></p>
+
+      <article id="message" class="message is-info mt-4 is-hidden">
+        <div class="message-header">
+          <p></p>
+        </div>
+        <div class="message-body">
+          <p></p>
+        </div>
+      </article>
+
+      <h2 class="title mt-4">Test your luck</h2>
+
+      <button id="luck-roll" class="button is-large is-fullwidth">🎲 🎲 Roll 2d6</button>
+      <p id="luck-roll-result" class="has-text-centered is-size-1 is-hidden"></p>
+
+      <button id="continue" class="button is-large is-fullwidth is-hidden mt-4">🔄 Continue</button>
+      <a href="ingame.html" id="back" class="button is-large is-fullwidth is-hidden">↩️ Back</a>
+    </div>
+  </section>
+
+  <footer class="footer mt-5">
+    <div class="content has-text-centered">
+      <p>
+        <a href="https://cv.hal.science/oliviernocent" target="_blank">Olivier Nocent</a> &copy; 2025
+        <a href="https://github.com/oliviernocent/fighting-fantasy/" target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="common.js"></script>
+  <script>
+    let creatureAttackStrength, heroAttackStrength;
+
+    function resetMessage() {
+      message.classList.remove("is-danger");
+      message.classList.remove("is-warning");
+      message.classList.remove("is-info");
+      message.classList.remove("is-success");
+      message.classList.add("is-hidden");
+    }
+
+    function displayMessage(type, header, body) {
+      resetMessage();
+      message.classList.add(type);
+      message.querySelector(".message-header p").innerHTML = header;
+      message.querySelector(".message-body p").innerHTML = body;
+      message.classList.remove("is-hidden");
+    }
+
+    function resolveFight() {
+      if (heroAttackStrength > creatureAttackStrength) {
+        let creatureStamina = Math.max(0, parseInt(stamina.value) - 2);
+        stamina.value = creatureStamina;
+
+        if (creatureStamina == 0) {
+          displayMessage("is-success", "You defeated the creature", "The creature is dead. You can go further on your adventure.");
+          document.querySelector("#back").classList.remove("is-hidden");
+          saveToLocalStorage();
+        }
+        else {
+          displayMessage("is-info", "You wounded the creature", "The creature loses <strong>2 points</strong> of stamina");
+          document.querySelector("#continue").classList.remove("is-hidden");
+        }
+      }
+
+      if (heroAttackStrength < creatureAttackStrength) {
+        let heroStamina = Math.max(0, currentBook.currentStamina - 2);
+        if (heroStamina == 0) {
+          displayMessage("is-danger", "You are dead", "The creature killed you and your adventure stops here.");
+        }
+        else {
+          displayMessage("is-warning", "The creature wounded you", "You lose <strong>2 points</strong> of stamina");
+          document.querySelector("#continue").classList.remove("is-hidden");
+        }
+
+        currentBook.currentStamina = heroStamina;
+        saveToLocalStorage();
+      }
+
+      if (heroAttackStrength == creatureAttackStrength) {
+        displayMessage("is-info", "You have both missed", "The creature and you don't lose stamina.");
+        document.querySelector("#continue").classList.remove("is-hidden");
+      }
+    }
+
+    function resolveLuck(score) {
+      if (heroAttackStrength > creatureAttackStrength) {
+        if (score <= currentBook.currentLuck) {
+          // Succeed
+          let creatureStamina = Math.max(0, parseInt(stamina.value) - 2);
+          stamina.value = creatureStamina;
+
+          if (creatureStamina == 0) {
+            // Monster is dead
+            displayMessage("is-success", "You defeated the creature", "The creature is dead. You can go further on your adventure.");
+
+            document.querySelector("#continue").classList.add("is-hidden");
+            document.querySelector("#back").classList.remove("is-hidden");
+          }
+          else {
+            // Monster is wounded
+            displayMessage("is-info", "You wounded severely the creature", "The creature loses <strong>2 extra points</strong> of stamina");
+
+            document.querySelector("#continue").classList.remove("is-hidden");
+            document.querySelector("#back").classList.add("is-hidden");
+          }
+        }
+        else {
+          // Failed
+          let creatureStamina = parseInt(stamina.value) + 1;
+          stamina.value = creatureStamina;
+
+          // Monster is less wounded
+          displayMessage("is-warning", "You wounded the creature less than expected", "The creature retrieves <strong>1 point</strong> of stamina.");
+
+          document.querySelector("#continue").classList.remove("is-hidden");
+          document.querySelector("#back").classList.add("is-hidden");
+        }
+      }
+
+      if (heroAttackStrength < creatureAttackStrength) {
+        if (score <= currentBook.currentLuck) {
+          // Succeed
+          currentBook.currentStamina = Math.min(currentBook.initialStamina, currentBook.currentStamina + 1);
+          displayMessage("is-info", "You succeeded", "You retrieve <strong>1 extra point</strong> of stamina.");
+
+          document.querySelector("#continue").classList.remove("is-hidden");
+        }
+        else {
+          // Failed
+          currentBook.currentStamina = Math.max(0, currentBook.currentStamina - 1);
+
+          if (currentBook.currentStamina == 0) {
+
+            displayMessage("is-danger", "You are dead", "The creature killed you and your adventure stops here.");
+
+            document.querySelector("#continue").classList.add("is-hidden");
+            document.querySelector("#back").classList.add("is-hidden");
+          }
+          else {
+            displayMessage("is-warning", "You failed", "You lose <strong>1 extra point</strong> of stamina.");
+
+            document.querySelector("#continue").classList.remove("is-hidden");
+            document.querySelector("#back").classList.add("is-hidden");
+          }
+        }
+      }
+
+      currentBook.currentLuck--;
+      saveToLocalStorage();
+    }
+
+    document.querySelector("#creature-roll").addEventListener("click", (event) => {
+      event.target.classList.add("is-hidden");
+      diceNumber = rollDice(2);
+      document.querySelector("#creature-roll-result").innerHTML = `${diceFace[diceNumber[0]]}&nbsp;${diceFace[diceNumber[1]]}`;
+      document.querySelector("#creature-roll-result").classList.remove("is-hidden");
+
+      creatureAttackStrength = diceNumber[0] + diceNumber[1] + parseInt(skill.value);
+    });
+
+    document.querySelector("#hero-roll").addEventListener("click", (event) => {
+      event.target.classList.add("is-hidden");
+      diceNumber = rollDice(2);
+      document.querySelector("#hero-roll-result").innerHTML = `${diceFace[diceNumber[0]]}&nbsp;${diceFace[diceNumber[1]]}`;
+      document.querySelector("#hero-roll-result").classList.remove("is-hidden");
+
+      heroAttackStrength = diceNumber[0] + diceNumber[1] + parseInt(currentBook.currentSkill);
+
+      resolveFight();
+    });
+
+    document.querySelector("#luck-roll").addEventListener("click", (event) => {
+      event.target.classList.add("is-hidden");
+      diceNumber = rollDice(2);
+      document.querySelector("#luck-roll-result").innerHTML = `${diceFace[diceNumber[0]]}&nbsp;${diceFace[diceNumber[1]]}`;
+      document.querySelector("#luck-roll-result").classList.remove("is-hidden");
+
+      resolveLuck(diceNumber[0] + diceNumber[1]);
+    });
+
+    document.querySelector("#continue").addEventListener("click", (event) => {
+      resetMessage();
+
+      document.querySelector("#creature-roll-result").classList.add("is-hidden");
+      document.querySelector("#creature-roll").classList.remove("is-hidden");
+
+      document.querySelector("#hero-roll-result").classList.add("is-hidden");
+      document.querySelector("#hero-roll").classList.remove("is-hidden");
+
+      document.querySelector("#luck-roll-result").classList.add("is-hidden");
+      document.querySelector("#luck-roll").classList.remove("is-hidden");
+
+      document.querySelector("#continue").classList.add("is-hidden");
+    });
+  </script>
+</body>
+
+</html>

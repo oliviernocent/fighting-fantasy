@@ -1,0 +1,124 @@
+<!doctype html>
+<!--<html data-theme="dark">-->
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fighting Fantasy Companion App</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+</head>
+
+<body>
+  <a href="index.html">
+    <section class="hero is-small is-warning">
+      <div class="hero-body">
+        <p class="title">Fighting Fantasy</p>
+        <p class="subtitle">Companion App</p>
+      </div>
+    </section>
+  </a>
+
+  <section class="section">
+    <div class="container is-max-tablet">
+
+      <div class="is-flex is-flex-direction-row is-justify-content-space-between">
+        <div class="field mx-2">
+          <label class="label">Skill 🗡️</label>
+          <div id="skill" class="control has-icons-left">
+            <input class="input" type="tel">
+            <span class="icon is-medium is-left has-text-grey"></span>
+          </div>
+        </div>
+        <div class="field mx-2">
+          <label class="label">Stamina ♥️</label>
+          <div id="stamina" class="control has-icons-left">
+            <input class="input" type="tel">
+            <span class="icon is-medium is-left has-text-grey"></span>
+          </div>
+        </div>
+        <div class="field mx-2">
+          <label class="label">Luck 🤞</label>
+          <div id="luck" class="control has-icons-left">
+            <input class="input" type="tel">
+            <span class="icon is-medium is-left has-text-grey"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="is-flex is-flex-direction-row is-justify-content-space-between">
+        <div class="field mx-2">
+          <label class="label">Gold 💰</label>
+          <div class="control">
+            <input id="gold" class="input" type="tel">
+          </div>
+        </div>
+        <div class="field mx-2">
+          <label class="label">Provisions 🍖</label>
+          <div class="control">
+            <input id="provisions" class="input" type="tel">
+          </div>
+        </div>
+      </div>
+
+      <a href="luck.html" class="button is-large is-fullwidth mt-2">🤞 Test your
+        Luck</a>
+      <a href="fight.html" class="button is-large is-fullwidth mt-2">⚔️ Fight!</a>
+      <a href="equipment.html" class="button is-large is-fullwidth mt-2">🧳 Equipment</a>
+      <a href="note.html" class="button is-large is-fullwidth mt-2">📖 Write a note</a>
+    </div>
+  </section>
+
+  <footer class="footer mt-5">
+    <div class="content has-text-centered">
+      <p>
+        <a href="https://cv.hal.science/oliviernocent" target="_blank">Olivier Nocent</a> &copy; 2025
+        <a href="https://github.com/oliviernocent/fighting-fantasy/" target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="common.js"></script>
+  <script>
+    // Initialization
+    document.querySelector("#skill input").value = currentBook.currentSkill;
+    document.querySelector("#skill span").textContent = currentBook.initialSkill;
+
+    document.querySelector("#stamina input").value = currentBook.currentStamina;
+    document.querySelector("#stamina span").textContent = currentBook.initialStamina;
+
+    document.querySelector("#luck input").value = currentBook.currentLuck;
+    document.querySelector("#luck span").textContent = currentBook.initialLuck;
+
+    document.querySelector("#gold").value = parseInt(currentBook.gold);
+    document.querySelector("#provisions").value = parseInt(currentBook.provisions);
+
+    // Save on change
+    document.querySelectorAll("input").forEach((input) => {
+      input.addEventListener("change", () => {
+        currentBook.currentSkill = parseInt(document.querySelector("#skill input").value);
+        currentBook.initialSkill = parseInt(document.querySelector("#skill span").textContent);
+
+        currentBook.currentStamina = parseInt(document.querySelector("#stamina input").value);
+        currentBook.initialStamina = parseInt(document.querySelector("#stamina span").textContent);
+
+        currentBook.currentLuck = parseInt(document.querySelector("#luck input").value);
+        currentBook.initialLuck = parseInt(document.querySelector("#luck span").textContent);
+
+        currentBook.gold = parseInt(document.querySelector("#gold").value);
+
+        if ((currentBook.provisions - parseInt(document.querySelector("#provisions").value)) == 1) {
+          currentBook.currentStamina = Math.min(currentBook.initialStamina, currentBook.currentStamina + 4);
+          document.querySelector("#stamina input").value = currentBook.currentStamina;
+        }
+        currentBook.provisions = parseInt(document.querySelector("#provisions").value);
+
+        saveToLocalStorage();
+      });
+    });
+  </script>
+</body>
+
+</html>

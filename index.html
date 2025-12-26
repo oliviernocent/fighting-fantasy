@@ -1,0 +1,106 @@
+<!doctype html>
+<!--<html data-theme="dark">-->
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fighting Fantasy Companion App</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+</head>
+
+<body>
+  <section class="hero is-small is-warning">
+    <div class="hero-body">
+      <p class="title">Fighting Fantasy</p>
+      <p class="subtitle">Companion App</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-tablet">
+      <h1 class="title">Introduction</h1>
+      <p>
+        Part novel, with its exciting story, and part game, with its elaborate
+        combat system, this book collection holds many adventures in store for you.
+
+        This app is intended to help you managing your character and your equipment,
+        fighting against dangerous monsters and recording your progress.
+      </p>
+      <div id="library" class="mt-4">
+      </div>
+
+      <div id="new-adventure" class="mt-4">
+        <button class="button is-warning is-large is-fullwidth">⚔️ New adventure</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer mt-5">
+    <div class="content has-text-centered">
+      <p>
+        <a href="https://cv.hal.science/oliviernocent" target="_blank">Olivier Nocent</a> &copy; 2025
+        <a href="https://github.com/oliviernocent/fighting-fantasy/" target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="common.js"></script>
+  <script>
+    // Load library
+    let html = ""
+    let i = 0;
+    for (let book of appData.bookList)
+      html += `
+      <div class="card">
+        <div class="card-content">
+          <p class="title" data-index="${i++}">
+            ${book.bookTitle}
+          </p>
+          <p class="subtitle">${book.date}</p>
+        </div>
+      </div>
+      `;
+
+    library.innerHTML = html;
+
+    // Select a book
+    document.querySelectorAll(".card .title").forEach((elt) => {
+      elt.addEventListener("click", (event) => {
+        appData.currentBookIndex = parseInt(event.target.getAttribute("data-index"));
+        saveToLocalStorage();
+        window.location = "newbook.html";
+      });
+    });
+
+    // Add a new book
+    document.querySelector("#new-adventure").addEventListener("click", (event) => {
+      appData.bookList.unshift({
+        "bookTitle": "",
+        "date": new Date().toISOString().substring(0, 10).replaceAll('-', '/'),
+        "initialSkill": 0,
+        "currentSkill": 0,
+        "initialStamina": 0,
+        "currentStamina": 0,
+        "initialLuck": 0,
+        "currentLuck": 0,
+        "gold": 10,
+        "provisions": 4,
+        "equipment": [
+          "Sword",
+          "Shield",
+          "Leather armour",
+          "Lantern"
+        ]
+      });
+      appData.currentBookIndex = 0;
+      saveToLocalStorage();
+
+      window.location = "newbook.html";
+    });
+  </script>
+</body>
+
+</html>

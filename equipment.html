@@ -1,0 +1,100 @@
+<!doctype html>
+<!--<html data-theme="dark">-->
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fighting Fantasy Companion App</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+</head>
+
+<body>
+  <a href="index.html">
+    <section class="hero is-small is-warning">
+      <div class="hero-body">
+        <p class="title">Fighting Fantasy</p>
+        <p class="subtitle">Companion App</p>
+      </div>
+    </section>
+  </a>
+
+  <section class="section">
+    <div class="container is-max-tablet">
+      <h1 class="title">Equipment</h1>
+
+      <div class="field has-addons">
+        <div class="control is-expanded">
+          <input id="label" class="input" type="text" placeholder="Add an item">
+        </div>
+        <div class="control">
+          <button id="add" class="button is-success">
+            ➕
+          </button>
+        </div>
+      </div>
+
+      <div id="equipment">
+      </div>
+
+      <a href="ingame.html" id="back" class="button is-large is-fullwidth mt-4">↩️ Back</a>
+    </div>
+  </section>
+
+  <footer class="footer mt-5">
+    <div class="content has-text-centered">
+      <p>
+        <a href="https://cv.hal.science/oliviernocent" target="_blank">Olivier Nocent</a> &copy; 2025
+        <a href="https://github.com/oliviernocent/fighting-fantasy/" target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="common.js"></script>
+  <script>
+    function displayEquipment() {
+      let html = "";
+      let i = 0;
+      for (let item of currentBook.equipment) {
+        html += `
+        <div class="field has-addons">
+          <div class="control is-expanded">
+            <input class="input" type="text" value="${item}" disabled>
+          </div>
+          <div class="control">
+            <button class="button is-danger" data-id="${i++}">
+              ➖
+            </button>
+          </div>
+        </div>
+        
+        `;
+      }
+
+      equipment.innerHTML = html;
+
+      document.querySelectorAll("#equipment button").forEach((elt) => {
+        elt.addEventListener("click", (event) => {
+          let id = parseInt(elt.getAttribute("data-id"));
+          console.log(id);
+          currentBook.equipment.splice(id, 1);
+          saveToLocalStorage();
+          displayEquipment();
+        });
+      });
+    }
+
+    add.addEventListener("click", (event) => {
+      currentBook.equipment.unshift(label.value);
+      saveToLocalStorage();
+      label.value = "";
+      displayEquipment();
+    });
+
+    displayEquipment();
+  </script>
+</body>
+
+</html>

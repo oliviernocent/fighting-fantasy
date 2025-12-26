@@ -1,0 +1,78 @@
+<!doctype html>
+<!--<html data-theme="dark">-->
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fighting Fantasy Companion App</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+</head>
+
+<body>
+  <a href="index.html">
+    <section class="hero is-small is-warning">
+      <div class="hero-body">
+        <p class="title">Fighting Fantasy</p>
+        <p class="subtitle">Companion App</p>
+      </div>
+    </section>
+  </a>
+
+  <section class="section">
+    <div class="container is-max-tablet">
+      <h1 class="title">Write a note</h1>
+
+      <div class="control">
+        <input id="section" class="input" type="text" placeholder="Section number">
+        <textarea id="comments" class="textarea mt-2" placeholder="Comments" rows="3"></textarea>
+      </div>
+
+      <button id="back" class="button is-large is-fullwidth mt-2">↩️ Back</button>
+
+      <hr>
+
+      <div id="list" class="mt-2">
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer mt-5">
+    <div class="content has-text-centered">
+      <p>
+        <a href="https://cv.hal.science/oliviernocent" target="_blank">Olivier Nocent</a> &copy; 2025
+        <a href="https://github.com/oliviernocent/fighting-fantasy/" target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="common.js"></script>
+  <script>
+    if (currentBook.notes !== undefined) {
+      html = "";
+      for (let note of currentBook.notes)
+        html += `<strong>${note.section}</strong><br>${note.comments}<br><br>`
+
+      list.innerHTML = html;
+    }
+
+    back.addEventListener("click", (event) => {
+      if (section.value != "") {
+        if (currentBook.notes === undefined)
+          currentBook.notes = [];
+
+        currentBook.notes.unshift({
+          "section": parseInt(section.value),
+          "comments": comments.value
+        });
+      }
+      saveToLocalStorage();
+      window.location = "ingame.html";
+    });
+
+  </script>
+</body>
+
+</html>
