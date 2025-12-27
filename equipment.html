@@ -87,10 +87,12 @@
     }
 
     add.addEventListener("click", (event) => {
-      currentBook.equipment.unshift(label.value);
-      saveToLocalStorage();
-      label.value = "";
-      displayEquipment();
+      if (label.value != "") {
+        currentBook.equipment.unshift(label.value);
+        saveToLocalStorage();
+        label.value = "";
+        displayEquipment();
+      }
     });
 
     displayEquipment();
