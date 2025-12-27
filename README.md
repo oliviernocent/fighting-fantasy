@@ -4,4 +4,6 @@ As a fan of [Fighting Fantasy gamebooks](https://www.fightingfantasy.com/), I al
 
 Here it comes as a web application. All the data is recorded on the browser local storage: no account, no authentication but **you always have to use the same device**.
 
+![QR code](qr-code.png)
+
 
