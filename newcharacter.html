@@ -76,6 +76,7 @@
 
   <script src="common.js"></script>
   <script>
+    // Set skill score
     skill.addEventListener("click", (event) => {
       diceNumber = rollDice(1);
       event.target.outerHTML = `<p class="has-text-centered is-size-1">${diceFace[diceNumber[0]]}</span>`;
@@ -84,6 +85,7 @@
       currentBook.currentSkill = currentBook.initialSkill;
     });
 
+    // Set stamina score
     stamina.addEventListener("click", (event) => {
       diceNumber = rollDice(2);
       event.target.outerHTML = `<p class="has-text-centered is-size-1">${diceFace[diceNumber[0]]}&nbsp;${diceFace[diceNumber[1]]}</span>`;
@@ -92,6 +94,7 @@
       currentBook.currentStamina = currentBook.initialStamina;
     });
 
+    // Set luck score
     luck.addEventListener("click", (event) => {
       diceNumber = rollDice(1);
       event.target.outerHTML = `<p class="has-text-centered is-size-1">${diceFace[diceNumber[0]]}</span>`;

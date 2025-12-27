@@ -59,11 +59,13 @@
 
   <script src="common.js"></script>
   <script>
+    // Display book title (if it exists)
     if (appData["bookList"][appData["currentBookIndex"]]["bookTitle"] !== "") {
       document.querySelector("input").value = currentBook.bookTitle;
       document.querySelector(".is-hidden").classList.remove("is-hidden");
     }
 
+    // Save book title
     document.querySelector("#new-character").addEventListener("click", (event) => {
       if (document.querySelector("input").value !== "") {
         currentBook.bookTitle = document.querySelector("input").value;

@@ -51,6 +51,7 @@
 
   <script src="common.js"></script>
   <script>
+    // Display previous notes
     if (currentBook.notes !== undefined) {
       html = "";
       for (let note of currentBook.notes)
@@ -59,6 +60,7 @@
       list.innerHTML = html;
     }
 
+    // Add a new note
     back.addEventListener("click", (event) => {
       if (section.value != "") {
         if (currentBook.notes === undefined)
